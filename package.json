@@ -1,0 +1,27 @@
+{
+  "name": "nodejs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/n1ke23/NodeJs.git"
+  },
+  "author": "Oleksandr Jashin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/n1ke23/NodeJs/issues"
+  },
+  "homepage": "https://github.com/n1ke23/NodeJs#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  },
+  "dependencies": {
+    "yargs": "^16.2.0"
+  }
+}
