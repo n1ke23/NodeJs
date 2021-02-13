@@ -1,4 +1,4 @@
-const { listContacts, getContactById, removeContact, addContact } = require('./contacts.js');
+const { listContacts, getContactById, removeContact, addContact } = require('./src/contacts/contacts.js');
 
 // index.js
 const argv = require('yargs').argv;
