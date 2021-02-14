@@ -2,8 +2,7 @@ import { default as fsWithCallbacks } from 'fs';
 const fs = fsWithCallbacks.promises;
 import path from 'path';
 
-// const __dirname = dirname(__filename);
-// const contactsPath = path.join(__dirname, "../../db/contacts.json");
+
 const contactsPath = path.format({
     root: './db/',
     name: 'contacts',
