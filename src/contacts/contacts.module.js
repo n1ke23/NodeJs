@@ -13,6 +13,7 @@ const contactsPath = path.format({
 async function listContacts(req, res, next) {
     try {
         const data = await fs.readFile(contactsPath, "utf8");
+        console.log("listContacts");
         return res.status(200).send(JSON.parse(data))
     } catch (error) {
         next(error)
@@ -24,8 +25,13 @@ async function getContactById(req, res, next) {
     try {
         const { contactId } = req.params;
         const data = await (fs.readFile(contactsPath, "utf8"));
-        const getContact = JSON.parse(data).find(user => user.id === contactId);
-        getContact ? res.status(200).send(getContact) : res.status(404).send({ message: 'Not found' })
+        const parseData = JSON.parse(data);
+        for (let key of parseData) {
+            if (key.id == contactId) {
+                return res.status(200).send(key)
+            }
+        }
+        return res.status(404).send({ message: 'Not found' })
     } catch (error) {
         next(error)
     }
