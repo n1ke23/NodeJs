@@ -5,15 +5,17 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { getPaths } from './helpers/utils.js';
 import contactRouter from './contacts/contacts.router.js'
+import mongoose from "mongoose"
 
 export class ContactsServer {
     constructor() {
         this.server = null;
     }
 
-    start() {
+    async start() {
         this.initServer();
         this.initConfig();
+        await this.initDatabase()
         this.initMiddlewares();
         this.initRoutes();
         this.initErrorHandler();
@@ -26,7 +28,23 @@ export class ContactsServer {
 
     initConfig() {
         const { __dirname } = getPaths(import.meta.url);
+
         dotenv.config({ path: path.join(__dirname, "../.env") })
+    }
+
+    async initDatabase() {
+        try {
+            await mongoose.connect(process.env.MONGODB_URL, {
+                useNewUrlParser: true,
+                useCreateIndex: true,
+                useUnifiedTopology: true,
+                useFindAndModify: false,
+            });
+            console.log("Database connection successful");
+        } catch (error) {
+            console.log(`MongoDB error: ${error.message}`);
+            process.exit(1);
+        }
     }
 
     initMiddlewares() {
@@ -48,7 +66,6 @@ export class ContactsServer {
     }
 
     startListening() {
-        dotenv.config()
         const PORT = process.env.PORT || 3000
         this.server.listen(PORT, () => {
             console.log('Server started on port ', PORT);
