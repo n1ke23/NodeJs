@@ -54,7 +54,9 @@ export class ContactsServer {
     }
 
     initRoutes() {
-        this.server.use('/contacts', contactRouter)
+        this.server.use('/contacts', contactRouter);
+        this.server.use('/auth', authRouter);
+        this.server.use('/users', userRouter);
     }
 
     initErrorHandler() {
