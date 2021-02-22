@@ -24,6 +24,7 @@ export class ContactsServer {
 
     initServer() {
         this.server = express();
+        this.server.use("/images", express.static(__dirname + '/public/images'))
     }
 
     initConfig() {
