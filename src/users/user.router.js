@@ -1,4 +1,3 @@
-
 import express from "express";
 import Joi from "joi";
 import { authorize, validate, } from "../helpers/validate.js";
