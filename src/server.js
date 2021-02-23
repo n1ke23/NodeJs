@@ -24,7 +24,6 @@ export class ContactsServer {
 
     initServer() {
         this.server = express();
-        this.server.use("/images", express.static(__dirname + '/public/images'))
     }
 
     initConfig() {
@@ -55,9 +54,12 @@ export class ContactsServer {
     }
 
     initRoutes() {
+        const { __dirname } = getPaths(import.meta.url);
         this.server.use('/contacts', contactRouter);
         this.server.use('/auth', authRouter);
         this.server.use('/users', userRouter);
+        this.server.use('/images', express.static(__dirname + "/public/images"))
+
     }
 
     initErrorHandler() {
