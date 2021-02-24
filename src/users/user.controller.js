@@ -2,7 +2,7 @@ import { userModel } from "./user.model.js";
 import bcrypt from 'bcrypt';
 
 
-export async function updateUserAvatar(req, res, next) {
+export async function updateUser(req, res, next) {
     try {
         const { _id, avatarURL } = req.user;
         const { filename } = req.file;
