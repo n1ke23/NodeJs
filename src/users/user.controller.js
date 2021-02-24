@@ -5,20 +5,21 @@ import bcrypt from 'bcrypt';
 export async function updateUserAvatar(req, res, next) {
     try {
         const { _id, avatarURL } = req.user;
+        const { filename } = req.file;
 
         const oldAvatar = path.parse(avatarURL).base;
 
         await fs.promises.unlink(process.env.STORAGE_DIR + oldAvatar);
 
-        const { filename } = req.file;
+        const { email, password } = req.body
         const newAvatarURL = baseAvatarURL + filename;
-        // const existUser = await userModel.findOne({ email });
-        // if (existUser) {
-        //     return res.status(409).json({ message: "Email in use" });
-        // }
-        // const passwordHash = await bcrypt.hash(password, Number(process.env.SALT_ROUNDS));
-        // const baseAvatarURL = 'http://localhost:3000/images/';
-        const updatedUser = await UserModel.findByIdAndUpdate(_id, { avatarURL: newAvatarURL, }, { new: true });
+        const existUser = await userModel.findOne({ email });
+        if (existUser) {
+            return res.status(409).json({ message: "Email in use" });
+        }
+        const passwordHash = await bcrypt.hash(password, Number(process.env.SALT_ROUNDS));
+        const baseAvatarURL = 'http://localhost:3000/images/';
+        const updatedUser = await UserModel.findByIdAndUpdate(_id, { avatarURL: newAvatarURL, email, password: passwordHash }, { new: true });
 
 
         return res.status(200).send({ avatarURL: updatedUser.avatarURL, email, password: passwordHash });
