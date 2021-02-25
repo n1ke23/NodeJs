@@ -14,9 +14,9 @@ export async function registerUser(req, res, next) {
             return res.status(409).json({ message: "Email in use" });
         }
         const passwordHash = await bcrypt.hash(password, Number(process.env.SALT_ROUNDS));
-        await userModel.create({ email, pasword: passwordHash });
 
         const avatarName = await avatarCreate();
+        await userModel.create({ avatarURL: avatarName, email, pasword: passwordHash });
         // const { __dirname } = getPaths(import.meta.url);
         const src = path.join(__dirname, (`../../tmp/${avatarName}`));
         const dest = path.join(__dirname, (`../../public/images/${avatarName}`));

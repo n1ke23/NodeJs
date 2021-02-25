@@ -1,7 +1,7 @@
 import AvatarGenerator from 'avatar-generator';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
-import { getPaths } from './utils';
+import { getPaths } from './utils.js';
 
 const { __dirname } = getPaths(import.meta.url);
 const avatar = new AvatarGenerator({
