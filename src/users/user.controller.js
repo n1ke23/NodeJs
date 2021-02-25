@@ -48,6 +48,7 @@ export async function updateSubscription(req, res, next) {
         next(error);
     }
 }
+
 export async function getCurrentUser(req, res, next) {
     try {
         const user = req.user;
@@ -60,3 +61,15 @@ export async function getCurrentUser(req, res, next) {
         next(error);
     }
 }
+
+export async function verifyUser(req, res, next) {
+    const { verificationToken } = req.params;
+    const user = await userModel.findOne({ verificationToken });
+    if (!user) {
+        return res.status(404).json({ message: "User not found" });
+    }
+
+    await userModel.findOneAndUpdate({ _id: user._id }, { verificationToken: "", verificationStatus: "Completed" });
+
+    return res.status(200).send();
+};

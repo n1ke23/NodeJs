@@ -11,7 +11,7 @@ export async function registerUser(req, res, next) {
         }
         const passwordHash = await bcrypt.hash(password, Number(process.env.SALT_ROUNDS));
         await userModel.create({ email, pasword: passwordHash });
-        return res.status(201).send({ user: { email, subscription } });
+        return res.status(201).send({ user: { email, subscription, verificationToken:  } });
     } catch (err) {
         next(err);
     }
