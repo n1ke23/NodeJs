@@ -17,9 +17,9 @@ export async function updateUser(req, res, next) {
             await fs.promises.unlink(src);
         }
 
+        const baseAvatarURL = 'http://localhost:3000/images/';
         const newAvatarURL = baseAvatarURL + filename;
         const passwordHash = await bcrypt.hash(password, Number(process.env.SALT_ROUNDS));
-        const baseAvatarURL = 'http://localhost:3000/images/';
         const updatedUser = await UserModel.findByIdAndUpdate(_id, {
             avatarURL: newAvatar ? newAvatarURL : avatarURL,
             email: email ? email : oldEmail,
@@ -48,6 +48,7 @@ export async function updateSubscription(req, res, next) {
         next(error);
     }
 }
+
 export async function getCurrentUser(req, res, next) {
     try {
         const user = req.user;
@@ -60,3 +61,4 @@ export async function getCurrentUser(req, res, next) {
         next(error);
     }
 }
+
