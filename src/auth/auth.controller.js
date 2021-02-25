@@ -17,16 +17,16 @@ export async function registerUser(req, res, next) {
         const passwordHash = await bcrypt.hash(password, Number(process.env.SALT_ROUNDS));
 
         const avatarName = await avatarCreate();
-        const avatarURL = 'http://localhost:3000/images/' + avatarName;
-        const verificationToken = uuidv4();
-        await userModel.create({ avatarURL, email, pasword: passwordHash, verificationToken });
-
-        // const { __dirname } = getPaths(import.meta.url);
-        const src = path.join(__dirname, (`../../tmp/${avatarName}`));
+        const { __dirname } = getPaths(import.meta.url);
         const dest = path.join(__dirname, (`../../public/images/${avatarName}`));
         await fs.copyFile(src, dest, (err) => {
             if (err) throw err
         });
+        const src = path.join(__dirname, (`../../tmp/${avatarName}`));
+        const avatarURL = 'http://localhost:3000/images/' + avatarName;
+        const verificationToken = uuidv4();
+        await userModel.create({ avatarURL, email, pasword: passwordHash, verificationToken });
+
         await fs.unlink(src);
         const verificationLink = `http://localhost:3000/auth/verify/${verificationToken}`
         await emailMsg(email, verificationLink)
