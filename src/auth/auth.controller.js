@@ -23,12 +23,12 @@ export async function registerUser(req, res, next) {
             if (err) throw err
         });
         const src = path.join(__dirname, (`../../tmp/${avatarName}`));
-        const avatarURL = 'http://localhost:3000/images/' + avatarName;
+        const avatarURL = `http://localhost${process.env.PORT}/images/` + avatarName;
         const verificationToken = uuidv4();
         await userModel.create({ avatarURL, email, pasword: passwordHash, verificationToken });
 
         await fs.unlink(src);
-        const verificationLink = `http://localhost:3000/auth/verify/${verificationToken}`
+        const verificationLink = `http://localhost:${process.env.PORT}/auth/verify/${verificationToken}`
         await emailMsg(email, verificationLink)
         return res.status(201).send({ user: { email, subscription } });
     } catch (err) {
