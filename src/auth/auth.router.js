@@ -1,6 +1,6 @@
 import express from "express";
 import Joi from "joi";
-import { validate, authorize } from "../helpers/validate.js";
+import { contactValidation, authorize } from "../helpers/validate.js";
 import { registerUser, loginUser, logOut } from "./auth.controller.js";
 import { asyncWrapper } from "../helpers/async-wrapper";
 
@@ -11,9 +11,9 @@ const authSchema = Joi.object({
     password: Joi.string().required(),
 });
 
-router.post("/register", validate(authSchema), registerUser);
+router.post("/register", contactValidation(authSchema), registerUser);
 
-router.post("/login", validate(authSchema), loginUser);
+router.post("/login", contactValidation(authSchema), loginUser);
 
 router.post("/logout", authorize, logOut);
 

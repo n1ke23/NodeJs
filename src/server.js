@@ -6,6 +6,8 @@ import path from 'path';
 import { getPaths } from './helpers/utils.js';
 import contactRouter from './contacts/contacts.router.js'
 import mongoose from "mongoose"
+import { authRouter } from './auth/auth.router.js';
+import { userRouter } from './users/user.router.js';
 
 export class ContactsServer {
     constructor() {
@@ -54,9 +56,12 @@ export class ContactsServer {
     }
 
     initRoutes() {
+        const { __dirname } = getPaths(import.meta.url);
         this.server.use('/contacts', contactRouter);
         this.server.use('/auth', authRouter);
         this.server.use('/users', userRouter);
+        this.server.use('/images', express.static(__dirname + "/public/images"))
+
     }
 
     initErrorHandler() {
