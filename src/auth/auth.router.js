@@ -1,7 +1,7 @@
 import express from "express";
 import Joi from "joi";
 import { contactValidation, authorize } from "../helpers/validate.js";
-import { registerUser, loginUser, logOut } from "./auth.controller.js";
+import { registerUser, loginUser, logOut, verifyUser } from "./auth.controller.js";
 import { asyncWrapper } from "../helpers/async-wrapper";
 
 const router = express.Router();

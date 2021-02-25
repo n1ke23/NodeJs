@@ -17,9 +17,9 @@ export async function updateUser(req, res, next) {
             await fs.promises.unlink(src);
         }
 
+        const baseAvatarURL = 'http://localhost:3000/images/';
         const newAvatarURL = baseAvatarURL + filename;
         const passwordHash = await bcrypt.hash(password, Number(process.env.SALT_ROUNDS));
-        const baseAvatarURL = 'http://localhost:3000/images/';
         const updatedUser = await UserModel.findByIdAndUpdate(_id, {
             avatarURL: newAvatar ? newAvatarURL : avatarURL,
             email: email ? email : oldEmail,
@@ -62,14 +62,3 @@ export async function getCurrentUser(req, res, next) {
     }
 }
 
-export async function verifyUser(req, res, next) {
-    const { verificationToken } = req.params;
-    const user = await userModel.findOne({ verificationToken });
-    if (!user) {
-        return res.status(404).json({ message: "User not found" });
-    }
-
-    await userModel.findOneAndUpdate({ _id: user._id }, { verificationToken: "", verificationStatus: "Completed" });
-
-    return res.status(200).send();
-};

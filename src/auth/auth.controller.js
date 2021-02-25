@@ -4,6 +4,7 @@ import { userModel } from '../users/user.model.js';
 import { avatarCreate } from '../helpers/avatarGenerator.js';
 import { getPaths } from '../helpers/utils.js';
 import { default as fsWithCallbacks } from 'fs';
+import { v4 as uuidv4 } from 'uuid';
 const fs = fsWithCallbacks.promises;
 
 export async function registerUser(req, res, next) {
@@ -16,7 +17,10 @@ export async function registerUser(req, res, next) {
         const passwordHash = await bcrypt.hash(password, Number(process.env.SALT_ROUNDS));
 
         const avatarName = await avatarCreate();
-        await userModel.create({ avatarURL: avatarName, email, pasword: passwordHash });
+        const avatarURL = 'http://localhost:3000/images/' + avatarName;
+        const verificationToken = uuidv4();
+        await userModel.create({ avatarURL, email, pasword: passwordHash, verificationToken });
+
         // const { __dirname } = getPaths(import.meta.url);
         const src = path.join(__dirname, (`../../tmp/${avatarName}`));
         const dest = path.join(__dirname, (`../../public/images/${avatarName}`));
@@ -24,7 +28,8 @@ export async function registerUser(req, res, next) {
             if (err) throw err
         });
         await fs.unlink(src);
-
+        const verificationLink = `http://localhost:3000/auth/verify/${verificationToken}`
+        await emailMsg(email, verificationLink)
         return res.status(201).send({ user: { email, subscription } });
     } catch (err) {
         next(err);
@@ -37,6 +42,9 @@ export async function loginUser(req, res, next) {
         const existUser = await userModel.findOne({ email });
         if (!existUser) {
             return res.status(401).json({ message: "Email or password is wrong" });
+        }
+        if (!existUser.verificationToken) {
+            return res.status(401).json({ message: "User not verification account" })
         }
         const isPasswordValid = await bcrypt.compare(password, existUser.passwordHash);
         if (!isPasswordValid) {
@@ -67,4 +75,16 @@ export async function logOut(req, res, next) {
     } catch (error) {
         next(error);
     }
+};
+
+export async function verifyUser(req, res, next) {
+    const { verificationToken } = req.params;
+    const user = await userModel.findOne({ verificationToken });
+    if (!user) {
+        return res.status(404).json({ message: "User not found" });
+    }
+
+    await userModel.findOneAndUpdate({ _id: user._id }, { verificationToken: "", });
+
+    return res.status(200).send();
 };
